@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie search</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+</head>
+<body class=""style="background-image:url('https://img.freepik.com/free-photo/assortment-cinema-elements-red-background-with-copy-space_23-2148457848.jpg?w=2000');" >
+    <h1 class="h1 text-center  py-2 text-dark fs-1 border border-5 border-white bg-light ">Movie search here..</h1>
+    <div class="container my-5">
+        <div class="row">
+            <div class="col-4"></div>
+            <div class="col-4 p-2 bg-secondary shadow m-1 p-5">
+                <form id="form">
+                    <input type="text" class="form-control" placeholder="Enter the Movie name" id="mname">
+                    <div class="text-center">
+                        <button type="button" class="btn btn-dark my-3" onclick="displayMovieData()">Submit</button>
+                    </div>
+                </form>
+            </div>
+            <div class="col-4"></div>
+        </div>
+
+        <div class="row my-4">
+            <div class="col-1"></div>
+            <div class="col-3" id="section1">
+
+            </div>
+            <div class="col-8" id="section2">
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function displayMovieData() {
+            var movieName = mname.value;
+            
+            fetch(`http://www.omdbapi.com/?apikey=e4bf1ca5&t=${movieName}`)
+            .then(response => response.json())
+            .then(movieDetails => displayDetails(movieDetails))
+            
+            .catch(error => alert('failed to fetch movie details'));  
+        }
+        function displayDetails(movieDetails) { 
+                // MoviePoster = movieDetails.Poster; 
+                // MovieTitle = movieDetails.Title; 
+                movieData = `
+                <div class="card me-5 text-dark  shadow m-3" 
+                style="width: 22rem; height:32rem; display: inline; float:right; background-color:white;">
+                
+                <img src="${movieDetails.Poster}" class="p-2" alt="${movieDetails.Title} Image"  width: 25rem; height:30rem class="text-dark"></img>
+                </div>
+                `;
+                section1.innerHTML = movieData;
+                console.log(movieDetails);
+                Runtime = (movieDetails.Type === 'series')? `${movieDetails.Runtime}/episodes`: `${movieDetails.Runtime}`;
+
+                movieData2 = `<div class="card me-5 text-dark border border-5 border-dark m-3 p-3 pb-3" 
+                style="width: 25rem; height:32rem; display: inline; float:right; background-color:white;">
+                
+                <h1 class="text-dark h1">${movieDetails.Title}</h1>
+                <div class="d-flex">
+                    <h4 class = 'text-dark h4'>${movieDetails.Year}</h4>
+                    <span class = 'text-dark mx-2 mt-1'>${movieDetails.Type} (${Runtime})</span>
+                    </div>
+                <div class="d-flex">
+                    <img width="40px" src="https://i.postimg.cc/6pKHfDS2/imdb.png"></img>
+                    <span class = 'm-1 text-dark h6'>${movieDetails.imdbRating}/10</span>
+                </div>
+                <h6 class = 'text-dark h5 my-2'>Genre : ${movieDetails.Genre}</h6>
+                <h6 class = 'text-dark h5 my-2'>Language : ${movieDetails.Language}</h6>
+                <h6 class = 'text-dark h5 my-2'>Release Date : ${movieDetails.Released}</h6>
+                <h6 class = 'text-dark h5 my-2'>Director : ${movieDetails.Director}</h6>
+                <h6 class = 'text-dark h5 my-2'>Writer : ${movieDetails.Writer}</h6>
+                <p class =  'text-dark h5 my-2'>Plot : ${movieDetails.Plot}</p>
+                </div>
+                </div>
+                `
+                section2.innerHTML = movieData2;
+                form.reset();  
+         }
+    </script>
+</body>
+</html>
